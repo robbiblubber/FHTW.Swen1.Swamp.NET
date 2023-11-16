@@ -130,7 +130,7 @@ namespace FHTW.Swen1.Swamp
             {
                 data += "Content-Length: 0\n";
             }
-            data += "Content-Type: text/plain\n";
+            data += "Content-Type: text/plain\n\n";
 
             if(!string.IsNullOrEmpty(payload)) { data += payload; }
 
