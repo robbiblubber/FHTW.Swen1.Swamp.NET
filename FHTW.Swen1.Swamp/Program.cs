@@ -1,4 +1,6 @@
-﻿namespace FHTW.Swen1.Swamp
+﻿using System.Text.Json;
+
+namespace FHTW.Swen1.Swamp
 {
     internal class Program
     {
@@ -10,10 +12,12 @@
         /// <param name="args">Arguments.</param>
         static void Main(string[] args)
         {
-            HttpSvr svr = new();
+            /*HttpSvr svr = new();
             svr.Incoming += _ProcessMesage;
 
-            svr.Run();
+            svr.Run();*/
+
+            Console.WriteLine(Configuration.Instance.DatabasePath);
         }
 
 
