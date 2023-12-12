@@ -17,7 +17,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Creates a new instance of this class.</summary>
-        public MessageRepository()
+        internal MessageRepository()
         {
             _Table = "MESSAGES";
             _Fields = "ID, KSENDER, KRECIPIENT, TITLE, BODY";

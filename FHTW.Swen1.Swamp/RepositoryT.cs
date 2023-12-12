@@ -7,7 +7,7 @@ using System.Data.SQLite;
 namespace FHTW.Swen1.Swamp
 {
     /// <summary>This class provides a repository base implementation.</summary>
-    public abstract class Repository<T>: IRepository<T> where T: class, new()
+    public abstract class Repository<T>: IRepository<T> where T: class, IItem, new()
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // protected static members                                                                                         //
@@ -70,6 +70,12 @@ namespace FHTW.Swen1.Swamp
 
             IDbCommand cmd = _Cn.CreateCommand();
             cmd.CommandText = $"SELECT {_Fields} FROM {_Table} WHERE ID = :id";
+            
+            IDataParameter p = cmd.CreateParameter();
+            p.ParameterName = ":id";
+            p.Value = id;
+            cmd.Parameters.Add(p);
+
             IDataReader re = cmd.ExecuteReader();
 
             if(re.Read())
@@ -114,7 +120,13 @@ namespace FHTW.Swen1.Swamp
         public virtual void Delete(T obj)
         {
             IDbCommand cmd = _Cn.CreateCommand();
-            cmd.CommandText = $"SELECT {_Fields} FROM {_Table}";
+            cmd.CommandText = $"DELETE FROM {_Table} WHERE ID = :id";
+
+            IDataParameter p = cmd.CreateParameter();
+            p.ParameterName = ":id";
+            p.Value = obj.ID;
+            cmd.Parameters.Add(p);
+
             cmd.ExecuteNonQuery();
             cmd.Dispose();
         }

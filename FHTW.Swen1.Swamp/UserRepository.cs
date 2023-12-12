@@ -15,7 +15,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary>Creates a new instance of this class.</summary>
-        public UserRepository()
+        internal UserRepository()
         {
             _Table = "USERS";
             _Fields = "ID, NAME";
@@ -106,6 +106,30 @@ namespace FHTW.Swen1.Swamp
 
             cmd.ExecuteNonQuery();
             cmd.Dispose();
+        }
+
+
+        /// <summary>Verifies a user password.</summary>
+        /// <param name="obj">Object.</param>
+        /// <param name="password">Password.</param>
+        /// <returns>Returns TRUE if the password has been successfully verified, otherwise returns FALSE.</returns>
+        public bool VerifyPassword(User obj, string password)
+        {
+            using(IDbCommand cmd = _Cn.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT COUNT(*) FROM {_Table} WHERE ID = :id AND PASSWORD = :p";
+                IDataParameter p = cmd.CreateParameter();
+                p.ParameterName = ":id";
+                p.Value = obj.ID;
+                cmd.Parameters.Add(p);
+
+                p = cmd.CreateParameter();
+                p.ParameterName = ":p";
+                p.Value = _HashPassword(password);
+                cmd.Parameters.Add(p);
+
+                return (Convert.ToInt32(cmd.ExecuteScalar()) == 1);
+            }
         }
 
 

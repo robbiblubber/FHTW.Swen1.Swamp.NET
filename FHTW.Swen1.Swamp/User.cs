@@ -37,7 +37,7 @@ namespace FHTW.Swen1.Swamp
         /// <param name="name">Name.</param>
         /// <param name="password">Password.</param>
         /// <returns>Returns the newly created user object.</returns>
-        public User Create(string id, string name, string password)
+        public static User Create(string id, string name, string password)
         {
             return _Repository.Create(id, name, password);
         }
@@ -60,6 +60,28 @@ namespace FHTW.Swen1.Swamp
         {
             get; set;
         } = "";
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // public methods                                                                                                   //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Changes the password.</summary>
+        /// <param name="password">New password.</param>
+        public void ChangePasswordTo(string password)
+        {
+            _Repository.ChangePassword(this, password);
+        }
+
+
+        /// <summary>Verifies the user password.</summary>
+        /// <param name="password">Password.</param>
+        /// <returns>Returns TRUE if the password has been successfully verified, otherwise returns FALSE.</returns>
+        public bool VerifyPassword(string password)
+        {
+            return _Repository.VerifyPassword(this, password);
+        }
 
 
 
