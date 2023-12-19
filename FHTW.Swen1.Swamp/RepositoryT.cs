@@ -40,6 +40,13 @@ namespace FHTW.Swen1.Swamp
         protected abstract void _Fill(T obj, IDataReader re);
 
 
+        /// <summary>Creates an instance of the repository type.</summary>
+        /// <returns>Instance.</returns>
+        protected virtual T _CreateInstance()
+        {
+            return new T();
+        }
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static methods                                                                                           //
@@ -80,7 +87,7 @@ namespace FHTW.Swen1.Swamp
 
             if(re.Read())
             {
-                rval = new();
+                rval = _CreateInstance();
                 _Fill(rval, re);
             }
 
@@ -103,7 +110,7 @@ namespace FHTW.Swen1.Swamp
 
             while(re.Read())
             {
-                T v = new();
+                T v = _CreateInstance();
                 _Fill(v, re);
                 rval.Add(v);
             }

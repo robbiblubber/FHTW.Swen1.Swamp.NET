@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace FHTW.Swen1.Swamp
 {
@@ -17,7 +19,10 @@ namespace FHTW.Swen1.Swamp
 
             svr.Run();*/
 
-            Console.WriteLine(Configuration.Instance.DatabasePath);
+            string s = "{\"id\":\"5\", \"x\":\"x\"}";
+            JsonNode j = JsonNode.Parse(s);
+            Console.WriteLine(j["id"]);
+            int z = 9;
         }
 
 

@@ -26,8 +26,50 @@ namespace FHTW.Swen1.Swamp
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // public methods                                                                                                   //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Returns a new message id.</summary>
+        /// <returns>Message ID.</returns>
+        public List<Message> GetAll(User recipient)
+        {
+            List<Message> rval = new();
+
+            IDbCommand cmd = _Cn.CreateCommand();
+            cmd.CommandText = $"SELECT {_Fields} FROM {_Table} WHERE RECIPIENT = :r";
+            IDataParameter p = cmd.CreateParameter();
+            p.ParameterName = ":r";
+            p.Value = recipient.ID;
+            cmd.Parameters.Add(p);
+
+            IDataReader re = cmd.ExecuteReader();
+
+            while(re.Read())
+            {
+                Message v = _CreateInstance();
+                _Fill(v, re);
+                rval.Add(v);
+            }
+
+            re.Close();
+            re.Dispose(); cmd.Dispose();
+
+            return rval;
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Repository<User>                                                                                      //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>Creates an instance of the repository type.</summary>
+        /// <returns>Instance.</returns>
+        protected override Message _CreateInstance()
+        {
+            return new Message(true);
+        }
+
 
         /// <summary>Sets the data for an object instance.</summary>
         /// <param name="obj">Object.</param>

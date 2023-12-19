@@ -1,0 +1,9 @@
+# create user
+curl -X POST http://localhost:12000/users --header "Content-Type: application/json" -d "{\"id\":\"user1\", \"name\":\"User 1\", \"password\":\"xxx\"}"
+
+# udate user
+curl -X PUT http://localhost:12000/users/user1 --header "Content-Type: application/json" --header "Authorization: user1 token" -d "{\"name\":\"User Franz\"}"
+
+# logon user
+curl -X POST http://localhost:12000/sessions --header "Content-Type: application/json" -d "{\"id\":\"user1\", \"password\":\"xxx\"}"
+

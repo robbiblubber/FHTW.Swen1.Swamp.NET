@@ -14,6 +14,38 @@ namespace FHTW.Swen1.Swamp
         /// <summary>Repository.</summary>
         private static MessageRepository _Repository = new MessageRepository();
 
+        /// <summary>Token buffer.</summary>
+        private const string _ID_BUFFER = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // constructors                                                                                                     //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>Creates a new instance of this class.</summary>
+        public Message() 
+        {
+            Random rnd = new Random();
+            ID = string.Empty + _ID_BUFFER[rnd.Next(_ID_BUFFER.Length)] + _ID_BUFFER[rnd.Next(_ID_BUFFER.Length)];
+
+            long d = DateTime.Now.Ticks;
+            long l = _ID_BUFFER.Length;
+            while(d != 0)
+            {
+                ID += _ID_BUFFER[Convert.ToInt32(d % l)];
+                d /= l;
+            }
+
+            for(int i = 0; i < 6; i++) { ID += _ID_BUFFER[rnd.Next(_ID_BUFFER.Length)]; }
+            ID = ID.Substring(0, 16);
+        }
+
+
+        /// <summary>Creates a new instance of this class.</summary>
+        /// <param name="fromBehind">Flag indicating the object is created by the repository.</param>
+        internal Message(bool fromBehind)
+        {}
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

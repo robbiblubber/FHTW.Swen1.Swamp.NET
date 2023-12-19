@@ -11,11 +11,14 @@ namespace FHTW.Swen1.Swamp
         // private static members                                                                                           //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
+        /// <summary>Synchronization object.</summary>
+        private static object _Sync = new object();
+
         /// <summary>Session list.</summary>
         private static Dictionary<string, Session> _Sessions = new();
 
         /// <summary>Token buffer.</summary>
-        private const string _TOKEN_BUFFER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        internal const string _TOKEN_BUFFER = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 
 
@@ -74,11 +77,29 @@ namespace FHTW.Swen1.Swamp
                 {
                     rval.User = user;
                     rval.Token = _CreateToken();
-                    _Sessions.Add(rval.Token, rval);
+
+                    lock(_Sync) { _Sessions.Add(rval.Token, rval); }
                 }
             }
 
             return rval;
+        }
+
+
+        /// <summary>Returns a session for a token.</summary>
+        /// <param name="token">Token.</param>
+        /// <returns>Session object.</returns>
+        public static Session FromToken(string token)
+        {
+            if(!_Sessions.ContainsKey(token))
+            {
+                return new Session() { Token = token };
+            }
+
+            lock(_Sync)
+            {
+                return _Sessions[token];
+            }
         }
 
 
@@ -117,7 +138,11 @@ namespace FHTW.Swen1.Swamp
         public void Close()
         {
             User = null;
-            if(_Sessions.ContainsKey(Token)) { _Sessions.Remove(Token); }
+
+            lock(_Sync)
+            {
+                if(_Sessions.ContainsKey(Token)) { _Sessions.Remove(Token); }
+            }
         }
     }
 }
