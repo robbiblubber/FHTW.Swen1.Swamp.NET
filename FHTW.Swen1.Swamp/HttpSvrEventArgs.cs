@@ -23,6 +23,13 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Creates a new instance of this class.</summary>
+        public HttpSvrEventArgs()
+        {
+            _Client= new TcpClient();
+        }
+
+
+        /// <summary>Creates a new instance of this class.</summary>
         /// <param name="client">TCP client object.</param>
         /// <param name="plainMessage">HTTP plain message.</param>
         public HttpSvrEventArgs(TcpClient client, string plainMessage) 
@@ -66,12 +73,12 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public properties                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Gets the plain HTTP message.</summary>
         public string PlainMessage
         {
             get; protected set;
-        }
+        } = string.Empty;
 
 
         /// <summary>Gets the HTTP method.</summary>
@@ -92,14 +99,14 @@ namespace FHTW.Swen1.Swamp
         public virtual HttpHeader[] Headers
         {
             get; protected set;
-        }
+        } = new HttpHeader[0];
 
 
         /// <summary>Gets the HTTP payload.</summary>
         public virtual string Payload
         {
             get; protected set;
-        }
+        } = string.Empty;
 
 
 

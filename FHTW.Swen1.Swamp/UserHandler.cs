@@ -45,10 +45,13 @@ namespace FHTW.Swen1.Swamp
             {
 
             }
-            else if(e.Path.StartsWith("/users"))
+            else if(e.Path == "/users")
             {
-                if(e.Method == "POST") { _CreateUser(e); }
-                e.Reply(400);
+                if(e.Method == "POST")
+                {
+                    _CreateUser(e);
+                }
+                else { e.Reply(400); }
             }
             else { return false; }
 
