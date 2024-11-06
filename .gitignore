@@ -1,0 +1,60 @@
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# Visual Studio
+.vs/
+obj/
+bin/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# DotCover is a Code Coverage Tool
+*.dotCover
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# NuGet Packages Directory
+#packages/
+
+# Enable "build/" folder in the NuGet Packages folder since NuGet packages use it for MSBuild targets.
+!packages/build/
+
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+
+# NuGet v3's project.json files produces more ignoreable files
+*.nuget.props
+*.nuget.targets
