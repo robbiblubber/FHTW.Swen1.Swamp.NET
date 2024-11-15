@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace FHTW.Swen1.Swamp
 {
+    /// <summary>This class implements a handler for user-specific requests.</summary>
     public class UserHandler: Handler, IHandler
     {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // [override] Handler                                                                                               //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Handles an incoming HTTP request.</summary>
+        /// <param name="e">Event arguments.</param>
         public override bool Handle(HttpSvrEventArgs e)
         {
             if(e.Path.StartsWith("users"))

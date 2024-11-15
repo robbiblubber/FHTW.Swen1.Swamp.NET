@@ -16,7 +16,7 @@ namespace FHTW.Swen1.Swamp
         static void Main(string[] args)
         {
             HttpSvr svr = new();
-            svr.Incoming += Svr_Incoming;
+            svr.Incoming += Svr_Incoming; //(sender, e) => { Handler.HandleEvent(e); };
 
             svr.Run();
         }
@@ -25,6 +25,10 @@ namespace FHTW.Swen1.Swamp
 
         private static void Svr_Incoming(object sender, HttpSvrEventArgs e)
         {
+            Handler.HandleEvent(e);
+
+            /*
+            
             Console.WriteLine(e.Method);
             Console.WriteLine(e.Path);
             Console.WriteLine();
@@ -36,6 +40,7 @@ namespace FHTW.Swen1.Swamp
             Console.WriteLine(e.Payload);
 
             e.Reply(HttpStatusCode.OK, "Yo Baby!");
+            */
         }
     }
 }
