@@ -120,7 +120,6 @@ namespace FHTW.Swen1.Swamp
             if(_Users.ContainsKey(userName))
             {
                 return (true, Token._CreateTokenFor(_Users[userName]));
-
             }
 
             return (false, string.Empty);

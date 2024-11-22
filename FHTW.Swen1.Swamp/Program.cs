@@ -27,8 +27,7 @@ namespace FHTW.Swen1.Swamp
         {
             Handler.HandleEvent(e);
 
-            /*
-            
+            /*           
             Console.WriteLine(e.Method);
             Console.WriteLine(e.Path);
             Console.WriteLine();

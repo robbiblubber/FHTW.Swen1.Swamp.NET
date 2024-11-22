@@ -123,6 +123,8 @@ namespace FHTW.Swen1.Swamp
                     data = "HTTP/1.1 200 OK\n"; break;
                 case 400:
                     data = "HTTP/1.1 400 Bad Request\n"; break;
+                case 401:
+                    data = "HTTP/1.1 401 Unauthorized\n"; break;
                 case 404:
                     data = "HTTP/1.1 404 Not found\n"; break;
                 default:

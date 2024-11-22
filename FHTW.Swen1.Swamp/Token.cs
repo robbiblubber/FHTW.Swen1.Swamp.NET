@@ -12,7 +12,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Alphabet string.</summary>
-        private static string _ALPHABET = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private const string _ALPHABET = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 
 
@@ -65,6 +65,24 @@ namespace FHTW.Swen1.Swamp
                 return (true, _Tokens[token]);
             }
 
+            return (false, null);
+        }
+
+
+        public static (bool Success, User? User) Authenticate(HttpSvrEventArgs e)
+        {
+            foreach(HttpHeader i in e.Headers)
+            {
+                if(i.Name == "Authorization")
+                {
+                    if(i.Value[..7] == "Bearer ")
+                    {
+                        return Authenticate(i.Value[7..].Trim());
+                    }
+                    break;
+                }
+            }
+            
             return (false, null);
         }
     }
