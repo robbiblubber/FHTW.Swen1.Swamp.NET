@@ -60,8 +60,16 @@ namespace FHTW.Swen1.Swamp
         ///          otherwise success flag if FALSE and user object is NULL.</returns>
         public static (bool Success, User? User) Authenticate(string token)
         {
+            if(Program.ALLOW_DEBUG_TOKEN && token.EndsWith("-debug"))
+            {                                                                   // accept debug token
+                token = token[..^6];
+                User? user = User.Get(token);
+
+                return ((user != null), user);
+            }
+
             if(_Tokens.ContainsKey(token))
-            {
+            {                                                                   // find real token
                 return (true, _Tokens[token]);
             }
 
@@ -69,21 +77,26 @@ namespace FHTW.Swen1.Swamp
         }
 
 
+        /// <summary>Authenticates a user by token.</summary>
+        /// <param name="e">Event arguments.</param>
+        /// <returns>Returns a tupple of success flag and user object.
+        ///          If successful, the success flag is TRUE and the user represents the authenticated user,
+        ///          otherwise success flag if FALSE and user object is NULL.</returns>
         public static (bool Success, User? User) Authenticate(HttpSvrEventArgs e)
         {
             foreach(HttpHeader i in e.Headers)
-            {
+            {                                                                   // iterates headers
                 if(i.Name == "Authorization")
-                {
+                {                                                               // found "Authorization" header
                     if(i.Value[..7] == "Bearer ")
-                    {
-                        return Authenticate(i.Value[7..].Trim());
+                    {                                                           // needs to start with "Bearer "
+                        return Authenticate(i.Value[7..].Trim());               // authenticate by token
                     }
                     break;
                 }
             }
             
-            return (false, null);
+            return (false, null);                                               // "Authorization" header not found, authentication failed
         }
     }
 }

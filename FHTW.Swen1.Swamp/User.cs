@@ -109,6 +109,16 @@ namespace FHTW.Swen1.Swamp
         }
 
 
+        /// <summary>Gets a user by user name.</summary>
+        /// <param name="userName">User name.</param>
+        /// <returns>Return a user object if the user was found, otherwise returns NULL.</returns>
+        public static User? Get(string userName) 
+        {
+            _Users.TryGetValue(userName, out User? user);
+            return user;
+        }
+
+
         /// <summary>Performs a user logon.</summary>
         /// <param name="userName">User name.</param>
         /// <param name="password">Password.</param>

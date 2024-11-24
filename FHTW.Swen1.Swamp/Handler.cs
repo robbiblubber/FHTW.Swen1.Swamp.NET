@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text.Json.Nodes;
 
 
 
@@ -32,10 +33,10 @@ namespace FHTW.Swen1.Swamp
 
             foreach(Type i in Assembly.GetExecutingAssembly().GetTypes()
                               .Where(m => m.IsAssignableTo(typeof(IHandler)) && (!m.IsAbstract)))
-            {
-                IHandler? h = (IHandler?) Activator.CreateInstance(i);
+            {                                                                   // iterate all concrete types that implement IHandler
+                IHandler? h = (IHandler?) Activator.CreateInstance(i);          // create an instance
                 if(h != null)
-                {
+                {                                                               // add to result set
                     rval.Add(h);
                 }
             }
@@ -53,13 +54,14 @@ namespace FHTW.Swen1.Swamp
         /// <param name="e">Event arguments.</param>
         public static void HandleEvent(HttpSvrEventArgs e)
         {
-            _Handlers ??= _GetHandlers();
+            _Handlers ??= _GetHandlers();                                       // initialize handlers if needed
 
             foreach(IHandler i in _Handlers)
-            {
+            {                                                                   // iterate handlers to find one that handles the request
                 if(i.Handle(e)) return;
             }
-            e.Reply(HttpStatusCode.BAD_REQUEST);
+                                                                                // reply 400 if no handler was able to process the request
+            e.Reply(HttpStatusCode.BAD_REQUEST, new JsonObject() { ["success"] = false, ["message"] = "Bad request" }.ToJsonString());
         }
 
 
