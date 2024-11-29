@@ -28,13 +28,15 @@ namespace FHTW.Swen1.Swamp
             svr.Incoming += Svr_Incoming; //(sender, e) => { Handler.HandleEvent(e); };
 
             svr.Run();
+
+            Task.WaitAll(_Tasks.ToArray());
         }
 
 
 
         private static void Svr_Incoming(object sender, HttpSvrEventArgs e)
         {
-            Handler.HandleEvent(e);
+            _ = Handler.HandleEvent(e);
 
             /*           
             Console.WriteLine(e.Method);

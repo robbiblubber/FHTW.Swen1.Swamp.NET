@@ -52,16 +52,20 @@ namespace FHTW.Swen1.Swamp
         
         /// <summary>Handles an incoming HTTP request.</summary>
         /// <param name="e">Event arguments.</param>
-        public static void HandleEvent(HttpSvrEventArgs e)
+        public static async Task HandleEvent(HttpSvrEventArgs e)
         {
-            _Handlers ??= _GetHandlers();                                       // initialize handlers if needed
+            await Task.Run(() =>
+            {
+                _Handlers ??= _GetHandlers();                                       // initialize handlers if needed
 
-            foreach(IHandler i in _Handlers)
-            {                                                                   // iterate handlers to find one that handles the request
-                if(i.Handle(e)) return;
-            }
-                                                                                // reply 400 if no handler was able to process the request
-            e.Reply(HttpStatusCode.BAD_REQUEST, new JsonObject() { ["success"] = false, ["message"] = "Bad request" }.ToJsonString());
+                foreach(IHandler i in _Handlers)
+                {                                                                   // iterate handlers to find one that handles the request
+                    if(i.Handle(e)) return;
+                }
+
+                // reply 400 if no handler was able to process the request
+                e.Reply(HttpStatusCode.BAD_REQUEST, new JsonObject() { ["success"] = false, ["message"] = "Bad request" }.ToJsonString());
+            });
         }
 
 
