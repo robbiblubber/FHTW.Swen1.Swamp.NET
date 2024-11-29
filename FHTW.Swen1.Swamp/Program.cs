@@ -28,8 +28,6 @@ namespace FHTW.Swen1.Swamp
             svr.Incoming += Svr_Incoming; //(sender, e) => { Handler.HandleEvent(e); };
 
             svr.Run();
-
-            Task.WaitAll(_Tasks.ToArray());
         }
 
 
