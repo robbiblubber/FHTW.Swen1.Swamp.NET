@@ -6,7 +6,7 @@ namespace FHTW.Swen1.Swamp.Repositories
 {
     /// <summary>Repository classes implement this interface.</summary>
     /// <typeparam name="T">Type.</typeparam>
-    public interface IRepository<T>
+    public interface IRepository<T> where T: IAtom
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public methods                                                                                                   //

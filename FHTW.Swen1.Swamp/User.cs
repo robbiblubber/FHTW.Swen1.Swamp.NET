@@ -9,7 +9,7 @@ using FHTW.Swen1.Swamp.Exceptions;
 namespace FHTW.Swen1.Swamp
 {
     /// <summary>This class represents a user.</summary>
-    public sealed class User
+    public sealed class User: IAtom
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static members                                                                                           //
@@ -26,7 +26,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
         /// <summary>Creates a new instance of this class.</summary>
-        private User()
+        public User()
         {}
 
 
@@ -38,7 +38,7 @@ namespace FHTW.Swen1.Swamp
         /// <summary>Gets the user name.</summary>
         public string UserName
         {
-            get; private set;
+            get; set;
         } = string.Empty;
 
 
@@ -56,11 +56,18 @@ namespace FHTW.Swen1.Swamp
         } = string.Empty;
 
 
+        /// <summary>Gets or sets if the user is administrator.</summary>
+        public bool IsAdmin
+        {
+            get; set;
+        } = false;
+
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public methods                                                                                                   //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Saves changes to the user object.</summary>
         /// <param name="token">Token of the session trying to modify the object.</param>
         /// <exception cref="SecurityException">Thrown in case of an unauthorized attempt to modify data.</exception>
@@ -134,5 +141,16 @@ namespace FHTW.Swen1.Swamp
 
             return (false, string.Empty);
         }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // [interface] IAtom                                                                                                //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        object? IAtom.__InternalID
+        {
+            get; set;
+        } = null;
     }
 }
