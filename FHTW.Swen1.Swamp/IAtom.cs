@@ -4,8 +4,27 @@
 
 namespace FHTW.Swen1.Swamp
 {
-    public interface IAtom
+    /// <summary>Persistent objects implement this interface.</summary>
+    public interface IAtom: __IAtom
     {
-        public object? __InternalID { get; set; }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // public methods                                                                                                   //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>Starts editing an object.</summary>
+        /// <param name="user">User that performs the operation.</param>
+        public void Edit(User user);
+
+
+        /// <summary>Deletes the object.</summary>
+        public void Delete();
+
+
+        /// <summary>Saves the object.</summary>
+        public void Save();
+
+
+        /// <summary>Refrehes the object.</summary>
+        public void Refresh();
     }
 }

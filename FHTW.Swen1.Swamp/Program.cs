@@ -24,14 +24,19 @@ namespace FHTW.Swen1.Swamp
         /// <param name="args">Command line arguments.</param>
         static void Main(string[] args)
         {
-            User u = new User();
+            User u;
+            /*u = new User();
             u.UserName = "alex";
             u.FullName = "Alexander Lang";
             u.EMail = "langa@technikum-wien.at";
 
-            UserRepository r = new();
-            r.Save(u, u);
+            u.Save();
+            */
 
+            u = User.ByUserName("alex");
+            u.EMail = "thedevil@hell.org";
+
+            u.Refresh();
 
             return;
             HttpSvr svr = new();

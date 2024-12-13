@@ -60,6 +60,8 @@ namespace FHTW.Swen1.Swamp
         ///          otherwise success flag if FALSE and user object is NULL.</returns>
         public static (bool Success, User? User) Authenticate(string token)
         {
+            // TODO: new logic
+            /*
             if(Program.ALLOW_DEBUG_TOKEN && token.EndsWith("-debug"))
             {                                                                   // accept debug token
                 token = token[..^6];
@@ -72,7 +74,7 @@ namespace FHTW.Swen1.Swamp
             {                                                                   // find real token
                 return (true, _Tokens[token]);
             }
-
+            */
             return (false, null);
         }
 

@@ -41,6 +41,8 @@ namespace FHTW.Swen1.Swamp
         /// <returns>Returns TRUE.</returns>
         private static bool _CreateUser(HttpSvrEventArgs e)
         {
+            //TODO: implement
+            /*
             JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
             int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
 
@@ -69,6 +71,8 @@ namespace FHTW.Swen1.Swamp
 
             e.Reply(status, reply?.ToJsonString());                             // send response
             return true;
+            */
+            return false;
         }
 
 
@@ -77,6 +81,9 @@ namespace FHTW.Swen1.Swamp
         /// <returns>Returns TRUE.</returns>
         private static bool _QueryUser(HttpSvrEventArgs e)
         {
+            // TODO: fix
+            return false;
+            /*
             JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
             int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
 
@@ -115,6 +122,7 @@ namespace FHTW.Swen1.Swamp
 
             e.Reply(status, reply?.ToJsonString());
             return true;
+            */
         }
     }
 }

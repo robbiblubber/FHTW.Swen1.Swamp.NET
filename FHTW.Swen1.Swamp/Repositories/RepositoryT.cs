@@ -8,7 +8,7 @@ namespace FHTW.Swen1.Swamp.Repositories
 {
     /// <summary>This class provides an abstract implementation of a repository.</summary>
     /// <typeparam name="T">Type.</typeparam>
-    public abstract class Repository<T>: IRepository<T> where T: IAtom
+    public abstract class Repository<T>: IRepository<T> where T: IAtom, new()
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static members                                                                                           //
@@ -62,7 +62,19 @@ namespace FHTW.Swen1.Swamp.Repositories
         /// <summary>Creates an object from database data.</summary>
         /// <param name="re">Database cursor.</param>
         /// <returns>Returns an object.</returns>
-        protected abstract T _CreateObject(IDataReader re);
+        protected virtual T _CreateObject(IDataReader re)
+        {
+            T rval = new();
+            ((__IAtom) rval).__InternalID = re.GetString(0);
+            return _RefeshObject(re, rval);
+        }
+
+
+        /// <summary>Refreshes an object from database data.</summary>
+        /// <param name="re">Database cursor.</param>
+        /// <param name="obj">Object.</param>
+        /// <returns>Returns an object.</returns>
+        protected abstract T _RefeshObject(IDataReader re, T obj);
 
 
         /// <summary>Sets the database parameters.</summary>
@@ -125,10 +137,32 @@ namespace FHTW.Swen1.Swamp.Repositories
         }
 
 
+        /// <summary>Refreshes the object.</summary>
+        /// <param name="obj">Object.</param>
+        public virtual void Refresh(T obj)
+        {
+            using(IDbCommand cmd = _Cn.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT {string.Join(", ", _Fields)} FROM {_TableName} WHERE {_Fields[0]} = :id";
+                IDataParameter p = cmd.CreateParameter();
+                p.ParameterName = ":id";
+                p.Value = ((__IAtom) obj).__InternalID;
+                cmd.Parameters.Add(p);
+
+                using(IDataReader re = cmd.ExecuteReader())
+                {
+                    if(re.Read())
+                    {
+                        _RefeshObject(re, obj);
+                    }
+                }
+            }
+        }
+
+
         /// <summary>Saves the object.</summary>
         /// <param name="obj">Object.</param>
-        /// <param name="user">User that performs the operation.</param>
-        public virtual void Save(T obj, User user)
+        public virtual void Save(T obj)
         {
             if(obj.__InternalID is null)
             {
@@ -172,7 +206,7 @@ namespace FHTW.Swen1.Swamp.Repositories
         /// <summary>Deletes the object.</summary>
         /// <param name="obj">Object.</param>
         /// <param name="user">User that performs the operation.</param>
-        public virtual void Delete(T obj, User user)
+        public virtual void Delete(T obj)
         {
             using(IDbCommand cmd = _Cn.CreateCommand())
             {

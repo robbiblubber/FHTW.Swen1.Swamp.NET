@@ -23,15 +23,18 @@ namespace FHTW.Swen1.Swamp.Repositories
         public IEnumerable<T> GetAll();
 
 
+        /// <summary>Refreshes the object.</summary>
+        /// <param name="obj">Object.</param>
+        public void Refresh(T obj);
+
+
         /// <summary>Saves the object.</summary>
         /// <param name="obj">Object.</param>
-        /// <param name="user">User that performs the operation.</param>
-        public void Save(T obj, User user);
+        public void Save(T obj);
 
 
         /// <summary>Deletes the object.</summary>
         /// <param name="obj">Object.</param>
-        /// <param name="user">User that performs the operation.</param>
-        public void Delete(T obj, User user);
+        public void Delete(T obj);
     }
 }

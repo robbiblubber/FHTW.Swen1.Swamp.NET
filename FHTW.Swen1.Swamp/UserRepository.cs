@@ -13,13 +13,13 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // constructors                                                                                                     //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Creates a new instance of this class.</summary>
-        internal UserRepository() 
-        { 
+        internal UserRepository()
+        {
             _TableName = "USERS";
-            _Fields = [ "USERNAME", "NAME", "EMAIL", "HADMIN" ];
-            _Params = [ ":id", ":n", ":m", ":a" ];
+            _Fields = ["USERNAME", "NAME", "EMAIL", "HADMIN"];
+            _Params = [":id", ":n", ":m", ":a"];
         }
 
 
@@ -28,18 +28,17 @@ namespace FHTW.Swen1.Swamp
         // protected methods                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>Creates an object from database data.</summary>
+        /// <summary>Refreshes an object from database data.</summary>
         /// <param name="re">Database cursor.</param>
+        /// <param name="obj">Object.</param>
         /// <returns>Returns an object.</returns>
-        protected override User _CreateObject(IDataReader re)
+        protected override User _RefeshObject(IDataReader re, User obj)
         {
-            User rval = new();
-            ((IAtom) rval).__InternalID = re.GetString(0);
-            rval.FullName = re.GetString(1);
-            rval.EMail = re.GetString(2);
-            rval.IsAdmin = re.GetBoolean(3);
+            obj.FullName = re.GetString(1);
+            obj.EMail = re.GetString(2);
+            obj._IsAdmin = re.GetBoolean(3);
 
-            return rval;
+            return obj;
         }
 
 
@@ -72,10 +71,9 @@ namespace FHTW.Swen1.Swamp
         
         /// <summary>Saves the object.</summary>
         /// <param name="obj">Object.</param>
-        /// <param name="user">User that performs the operation.</param>
-        public override void Save(User obj, User user)
+        public override void Save(User obj)
         {
-            if(((IAtom) obj).__InternalID is null)
+            if(((__IAtom) obj).__InternalID is null)
             {
                 using(IDbCommand cmd = _Cn.CreateCommand())
                 {
@@ -90,9 +88,9 @@ namespace FHTW.Swen1.Swamp
                     cmd.ExecuteNonQuery();
                 }
 
-                ((IAtom) obj).__InternalID = obj.UserName;
+                ((__IAtom) obj).__InternalID = obj.UserName;
             }
-            else { base.Save(obj, user); }
+            else { base.Save(obj); }
         }
     }
 }
