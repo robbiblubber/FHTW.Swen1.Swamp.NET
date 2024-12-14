@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Text.Json.Nodes;
-
 using FHTW.Swen1.Swamp.Exceptions;
+using FHTW.Swen1.Swamp.Server;
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Handlers
 {
     /// <summary>This class implements a handler for user-specific requests.</summary>
-    public class UserHandler: Handler, IHandler
+    public class UserHandler : Handler, IHandler
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Handler                                                                                               //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Handles an incoming HTTP request.</summary>
         /// <param name="e">Event arguments.</param>
         public override bool Handle(HttpSvrEventArgs e)
         {
-            if((e.Path.TrimEnd('/', ' ', '\t') == "/users") && (e.Method == "POST"))
+            if (e.Path.TrimEnd('/', ' ', '\t') == "/users" && e.Method == "POST")
             {                                                                   // POST /users will create a user object
                 return _CreateUser(e);
             }
-            else if(e.Path.StartsWith("/users/") && (e.Method == "GET"))        // GET /users/UserName will query a user
+            else if (e.Path.StartsWith("/users/") && e.Method == "GET")        // GET /users/UserName will query a user
             {
                 return _QueryUser(e);
             }
@@ -35,7 +35,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static methods                                                                                           //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Creates a user.</summary>
         /// <param name="e">Event arguments.</param>
         /// <returns>Returns TRUE.</returns>

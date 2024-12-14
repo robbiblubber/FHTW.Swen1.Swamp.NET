@@ -2,7 +2,7 @@
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Server
 {
     /// <summary>This class represents a HTTP header.</summary>
     public class HttpHeader
@@ -23,7 +23,7 @@ namespace FHTW.Swen1.Swamp
                 Name = header.Substring(0, n).Trim();
                 Value = header.Substring(n + 1).Trim();
             }
-            catch(Exception) {}
+            catch (Exception) { }
         }
 
 
@@ -31,7 +31,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public properties                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Gets the header name.</summary>
         public string Name
         {

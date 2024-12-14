@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Data;
+using FHTW.Swen1.Swamp.Base;
+using FHTW.Swen1.Swamp.Security;
 
-using FHTW.Swen1.Swamp.Repositories;
 
 
-
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Repositories
 {
     /// <summary>This class provides a repository for user objects.</summary>
-    public sealed class UserRepository: Repository<User>, IRepository<User>
+    public sealed class UserRepository : Repository<User>, IRepository<User>
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // constructors                                                                                                     //
@@ -68,27 +68,27 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Repository<User>                                                                                      //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Saves the object.</summary>
         /// <param name="obj">Object.</param>
         public override void Save(User obj)
         {
-            if(((__IAtom) obj).__InternalID is null)
+            if (((__IAtom)obj).__InternalID is null)
             {
-                using(IDbCommand cmd = _Cn.CreateCommand())
+                using (IDbCommand cmd = _Cn.CreateCommand())
                 {
                     cmd.CommandText = $"INSERT INTO {_TableName} ({string.Join(", ", _Fields)}) VALUES ({string.Join(", ", _Params)})";
-                    
+
                     _FillParameters(cmd, obj);
                     IDataParameter p = cmd.CreateParameter();
                     p.ParameterName = _Params[0];
                     p.Value = obj.UserName;
                     cmd.Parameters.Add(p);
-                    
+
                     cmd.ExecuteNonQuery();
                 }
 
-                ((__IAtom) obj).__InternalID = obj.UserName;
+                ((__IAtom)obj).__InternalID = obj.UserName;
             }
             else { base.Save(obj); }
         }

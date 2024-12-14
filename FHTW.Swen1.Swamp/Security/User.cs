@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Security;
-using System.Security.Authentication;
 
-using FHTW.Swen1.Swamp.Exceptions;
+using FHTW.Swen1.Swamp.Base;
+using FHTW.Swen1.Swamp.Repositories;
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Security
 {
     /// <summary>This class represents a user.</summary>
-    public sealed class User: IAtom, __IAtom
+    public sealed class User: Atom, IAtom, __IAtom
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static members                                                                                           //
@@ -24,24 +24,18 @@ namespace FHTW.Swen1.Swamp
         // private members                                                                                                  //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>Editing user.</summary>
-        private User? _EditingUser = null;
-
         /// <summary>User name.</summary>
-        internal string _UserName = string.Empty;
+        private string _UserName = string.Empty;
 
         /// <summary>Admin flag.</summary>
         internal bool _IsAdmin = false;
-
-        /// <summary>Internal ID.</summary>
-        internal object? _InternalID = null;
 
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // constructors                                                                                                     //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Creates a new instance of this class.</summary>
         public User()
         {}
@@ -51,7 +45,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public static properties                                                                                         //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Gets a user by user name.</summary>
         /// <param name="userName">User name.</param>
         /// <returns>User.</returns>
@@ -70,10 +64,10 @@ namespace FHTW.Swen1.Swamp
         public string UserName
         {
             get { return _UserName; }
-            set 
-            { 
-                if(!string.IsNullOrEmpty(_UserName)) { throw new SecurityException("Changing user name disallowed."); }
-                _UserName = value; 
+            set
+            {
+                if (!string.IsNullOrEmpty(_UserName)) { throw new SecurityException("Changing user name disallowed."); }
+                _UserName = value;
             }
         }
 
@@ -101,7 +95,7 @@ namespace FHTW.Swen1.Swamp
             {
                 if(_IsAdmin != value)
                 {
-                    if((_EditingUser is null) || (!_EditingUser.IsAdmin))
+                    if(_EditingUser is null || !_EditingUser.IsAdmin)
                     {
                         throw new SecurityException("Administrative access required.");
                     }
@@ -113,65 +107,47 @@ namespace FHTW.Swen1.Swamp
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // [interface] IAtom                                                                                                //
+        // [override] Atom                                                                                                  //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>Starts editing an object.</summary>
-        /// <param name="user">User that performs the operation.</param>
-        public void Edit(User user)
+        /// <summary>Sets the object ID.</summary>
+        /// <param name="id">ID.</param>
+        protected override void _SetID(object? id)
         {
-            _EditingUser = user;
+            base._SetID(id);
+            _UserName = (string?) id ?? string.Empty;
         }
 
 
         /// <summary>Deletes the object.</summary>
-        public void Delete()
+        public override void Delete()
         {
-            if((_EditingUser != this) && (!(_EditingUser?.IsAdmin ?? false)))
+            if (_EditingUser != this && !(_EditingUser?.IsAdmin ?? false))
             {
                 throw new SecurityException("Administrative access required.");
             }
+            
             _Repository.Delete(this);
         }
 
 
         /// <summary>Saves the object.</summary>
-        public void Save()
+        public override void Save()
         {
             if((((__IAtom) this).__InternalID == null) && IsAdmin)
             {
                 throw new SecurityException("Creating admin user disallowed.");
             }
-            if(string.IsNullOrEmpty(_UserName)) throw new SecurityException("Creating user with empty user name disallowed.");
+            if(string.IsNullOrEmpty(_UserName)) throw new SecurityException("Empty user name disallowed.");
 
             _Repository.Save(this);
         }
 
 
         /// <summary>Refrehes the object.</summary>
-        public void Refresh()
+        public override void Refresh()
         {
             _Repository.Refresh(this);
-        }
-
-
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // [interface] __IAtom                                                                                              //
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        /// <summary>Gets or sets the internal ID.</summary>
-        object? __IAtom.__InternalID
-        {
-            get { return _InternalID; }
-            set { _UserName = (string?) (_InternalID = value) ?? string.Empty; }
-        }
-
-
-        /// <summary>Gets the editing user for this object.</summary>
-        User? __IAtom.__EditingUser 
-        { 
-            get { return _EditingUser; }
         }
     }
 }

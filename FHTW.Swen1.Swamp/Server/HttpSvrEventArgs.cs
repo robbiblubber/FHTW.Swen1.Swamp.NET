@@ -4,15 +4,15 @@ using System.Text;
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Server
 {
     /// <summary>This class defines event arguments for the <see cref="HttpSvrEventHandler"/> event handler.</summary>
-    public class HttpSvrEventArgs: EventArgs
+    public class HttpSvrEventArgs : EventArgs
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // protected members                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>TCP client.</summary>
         protected TcpClient _Client;
 
@@ -21,11 +21,11 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // constructors                                                                                                     //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Creates a new instance of this class.</summary>
         /// <param name="client">TCP client.</param>
         /// <param name="plainMessage">Plain HTTP message.</param>
-        public HttpSvrEventArgs(TcpClient client, string plainMessage) 
+        public HttpSvrEventArgs(TcpClient client, string plainMessage)
         {
             _Client = client;
 
@@ -36,9 +36,9 @@ namespace FHTW.Swen1.Swamp
             bool inheaders = true;
             List<HttpHeader> headers = new();
 
-            for(int i = 0; i < lines.Length; i++) 
+            for (int i = 0; i < lines.Length; i++)
             {
-                if(i == 0)
+                if (i == 0)
                 {
                     string[] inc = lines[0].Split(' ');
                     Method = inc[0];
@@ -46,9 +46,9 @@ namespace FHTW.Swen1.Swamp
                     continue;
                 }
 
-                if(inheaders)
+                if (inheaders)
                 {
-                    if(string.IsNullOrWhiteSpace(lines[i])) 
+                    if (string.IsNullOrWhiteSpace(lines[i]))
                     {
                         inheaders = false;
                     }
@@ -56,7 +56,7 @@ namespace FHTW.Swen1.Swamp
                 }
                 else
                 {
-                    if(!string.IsNullOrWhiteSpace(Payload)) { Payload += "\r\n"; }
+                    if (!string.IsNullOrWhiteSpace(Payload)) { Payload += "\r\n"; }
                     Payload += lines[i];
                 }
             }
@@ -69,7 +69,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public properties                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Gets the plain message.</summary>
         public string PlainMessage
         {
@@ -109,7 +109,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public methods                                                                                                   //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Replies the request</summary>
         /// <param name="status">HTTP Status code.</param>
         /// <param name="msg">Reply body.</param>
@@ -117,7 +117,7 @@ namespace FHTW.Swen1.Swamp
         {
             string data;
 
-            switch(status)
+            switch (status)
             {
                 case 200:
                     data = "HTTP/1.1 200 OK\n"; break;
@@ -131,12 +131,12 @@ namespace FHTW.Swen1.Swamp
                     data = $"HTTP/1.1 {status} Status unknown\n"; break;
             }
 
-            if(string.IsNullOrEmpty(body)) 
+            if (string.IsNullOrEmpty(body))
             {
                 data += "Content-Length: 0\n";
             }
             data += "Content-Type: text/plain\n\n";
-            if(!string.IsNullOrEmpty(body)) { data += body; }
+            if (!string.IsNullOrEmpty(body)) { data += body; }
 
             byte[] buf = Encoding.ASCII.GetBytes(data);
             _Client.GetStream().Write(buf, 0, buf.Length);

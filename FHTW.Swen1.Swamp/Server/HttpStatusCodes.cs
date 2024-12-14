@@ -2,7 +2,7 @@
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Server
 {
     /// <summary>This enumeration defines HTTP status codes that are used by
     ///          the <see cref="HttpSvr"/> implementation.</summary>

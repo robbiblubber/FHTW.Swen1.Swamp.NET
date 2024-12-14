@@ -2,7 +2,7 @@
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Server
 {
     /// <summary>This delegate is used for <see cref="HttpSvr"/> events.</summary>
     /// <param name="sender">Sending object.</param>

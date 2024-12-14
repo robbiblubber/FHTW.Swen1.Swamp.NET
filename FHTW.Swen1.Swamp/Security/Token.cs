@@ -1,8 +1,9 @@
 ﻿using System;
+using FHTW.Swen1.Swamp.Server;
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Security
 {
     /// <summary>This class provides methods for the token-based security.</summary>
     public static class Token
@@ -19,7 +20,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static members                                                                                           //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Token dictionary.</summary>
         internal static Dictionary<string, User> _Tokens = new();
 
@@ -28,7 +29,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static methods                                                                                           //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Creates a new token for a user.</summary>
         /// <param name="user">User.</param>
         /// <returns>Token string.</returns>
@@ -37,7 +38,7 @@ namespace FHTW.Swen1.Swamp
             string rval = string.Empty;
             Random rnd = new();
 
-            for(int i = 0; i < 24; i++)
+            for (int i = 0; i < 24; i++)
             {
                 rval += _ALPHABET[rnd.Next(0, 62)];
             }
@@ -52,7 +53,7 @@ namespace FHTW.Swen1.Swamp
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public static methods                                                                                            //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
+
         /// <summary>Authenticates a user by token.</summary>
         /// <param name="token">Token string.</param>
         /// <returns>Returns a tupple of success flag and user object.
@@ -86,18 +87,18 @@ namespace FHTW.Swen1.Swamp
         ///          otherwise success flag if FALSE and user object is NULL.</returns>
         public static (bool Success, User? User) Authenticate(HttpSvrEventArgs e)
         {
-            foreach(HttpHeader i in e.Headers)
+            foreach (HttpHeader i in e.Headers)
             {                                                                   // iterates headers
-                if(i.Name == "Authorization")
+                if (i.Name == "Authorization")
                 {                                                               // found "Authorization" header
-                    if(i.Value[..7] == "Bearer ")
+                    if (i.Value[..7] == "Bearer ")
                     {                                                           // needs to start with "Bearer "
                         return Authenticate(i.Value[7..].Trim());               // authenticate by token
                     }
                     break;
                 }
             }
-            
+
             return (false, null);                                               // "Authorization" header not found, authentication failed
         }
     }

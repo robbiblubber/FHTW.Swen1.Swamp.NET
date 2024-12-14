@@ -1,11 +1,12 @@
 ﻿using System;
+using FHTW.Swen1.Swamp.Security;
 
 
 
-namespace FHTW.Swen1.Swamp
+namespace FHTW.Swen1.Swamp.Base
 {
     /// <summary>Persistent objects implement this interface.</summary>
-    public interface IAtom: __IAtom
+    public interface IAtom : __IAtom
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public methods                                                                                                   //
