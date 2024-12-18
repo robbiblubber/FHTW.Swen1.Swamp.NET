@@ -37,7 +37,7 @@ namespace FHTW.Swen1.Swamp.Repositories
         /// <returns>Returns TRUE if the password is valid, otherwise returns FALSE.</returns>
         public bool VerifyPassword(User user, string password)
         {
-            using (IDbCommand cmd = _Cn.CreateCommand())
+            using(IDbCommand cmd = _Cn.CreateCommand())
             {
                 cmd.CommandText = $"SELECT COUNT(*) FROM {_TableName} WHERE USERNAME = :un AND PASSWD = :pw";
 

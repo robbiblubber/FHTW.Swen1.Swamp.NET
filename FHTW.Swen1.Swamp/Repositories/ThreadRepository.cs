@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Data;
-using FHTW.Swen1.Swamp.Base;
-
-using FHTW.Swen1.Swamp.Security;
 
 using Thread = FHTW.Swen1.Swamp.Model.Thread;
 

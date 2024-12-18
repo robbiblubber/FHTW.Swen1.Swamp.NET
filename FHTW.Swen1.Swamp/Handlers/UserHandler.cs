@@ -66,7 +66,7 @@ namespace FHTW.Swen1.Swamp.Handlers
 
                     status = HttpStatusCode.OK;
                     reply = new JsonObject() { ["success"] = true,
-                                                ["message"] = "User created."};
+                                               ["message"] = "User created."};
                 }
             }
             catch(SecurityException ex)

@@ -79,7 +79,6 @@ namespace FHTW.Swen1.Swamp.Security
             }
 
             _Repository.SetPassword(this, password);
-            _EditingSession = null;
         }
 
 
@@ -105,7 +104,7 @@ namespace FHTW.Swen1.Swamp.Security
             get { return _UserName; }
             set
             {
-                if (!string.IsNullOrEmpty(_UserName)) { throw new SecurityException("Changing user name disallowed."); }
+                if(!string.IsNullOrEmpty(_UserName)) { throw new SecurityException("Changing user name disallowed."); }
                 _UserName = value;
             }
         }

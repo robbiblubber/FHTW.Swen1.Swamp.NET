@@ -225,8 +225,6 @@ namespace FHTW.Swen1.Swamp.Handlers
             {
                 try
                 {
-                    string s = e.Path.TrimEnd('/')[..^8];
-
                     Thread th = Thread.ByID(Convert.ToInt32(e.Path.TrimEnd('/')[..^8][9..]));
                         
                     status = HttpStatusCode.OK;
