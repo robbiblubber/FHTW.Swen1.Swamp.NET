@@ -6,6 +6,7 @@ using Thread = FHTW.Swen1.Swamp.Model.Thread;
 
 using FHTW.Swen1.Swamp.Security;
 using FHTW.Swen1.Swamp.Server;
+using FHTW.Swen1.Swamp.Model;
 
 
 
@@ -30,7 +31,11 @@ namespace FHTW.Swen1.Swamp.Handlers
             {
                 if(e.Method == "GET")
                 {
-                    return _Query(e);
+                    if(e.Path.TrimEnd('/').EndsWith("entries"))
+                    {
+                        return _GetEntries(e);
+                    }
+                    else { return _Query(e); }
                 }
                 else if(e.Method == "PUT")
                 {
@@ -191,6 +196,46 @@ namespace FHTW.Swen1.Swamp.Handlers
                         
                     status = HttpStatusCode.OK;
                     reply = new JsonObject() { ["success"] = true, ["id"] = th.ID, ["title"] = th.Title, ["owner"] = th.Owner, ["time"] = th.Time };
+                }
+                catch(Exception)
+                {                                                               // thread not found
+                    status = HttpStatusCode.NOT_FOUND;
+                    reply = new JsonObject() { ["success"] = false, ["message"] = "Thread not found." };
+                }
+            }
+            catch(Exception ex)
+            {                                                                   // handle unexpected exception
+                reply = new JsonObject() { ["success"] = false, ["message"] = ex.Message };
+            }
+
+            e.Reply(status, reply?.ToJsonString());                             // send response
+            return true;
+        }
+
+
+        /// <summary>Gets the entries for a thread.</summary>
+        /// <param name="e">Event arguments.</param>
+        /// <returns>Returns TRUE.</returns>
+        private static bool _GetEntries(HttpSvrEventArgs e)
+        {
+            JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
+            int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
+
+            try
+            {
+                try
+                {
+                    string s = e.Path.TrimEnd('/')[..^8];
+
+                    Thread th = Thread.ByID(Convert.ToInt32(e.Path.TrimEnd('/')[..^8][9..]));
+                        
+                    status = HttpStatusCode.OK;
+                    JsonArray arr = new JsonArray();
+                    foreach(Entry i in th.Entries)
+                    {
+                        arr.Add(new JsonObject() { ["id"] = i.ID, ["text"] = i.Text, ["owner"] = i.Owner, ["thread"] = th.ID, ["time"] = i.Time });
+                    }
+                    reply = new JsonObject() { ["success"] = true, ["elements"] =  arr};
                 }
                 catch(Exception)
                 {                                                               // thread not found
