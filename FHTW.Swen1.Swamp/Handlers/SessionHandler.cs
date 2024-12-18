@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Text.Json.Nodes;
+
+using FHTW.Swen1.Swamp.Security;
 using FHTW.Swen1.Swamp.Server;
 
 
 
 namespace FHTW.Swen1.Swamp.Handlers
 {
-    public class SessionHandler : Handler, IHandler
+    public sealed class SessionHandler: Handler, IHandler
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Handler                                                                                               //
@@ -35,8 +37,36 @@ namespace FHTW.Swen1.Swamp.Handlers
         /// <returns>Returns TRUE.</returns>
         public static bool _CreateSession(HttpSvrEventArgs e)
         {
-            // TODO: implement
-            return false;
+            JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
+            int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
+
+            try
+            {
+                JsonNode? json = JsonNode.Parse(e.Payload);                     // parse payload
+                if(json != null)
+                {
+                    Session ses = Session.Create((string?) json["username"] ?? "", (string?) json["password"] ?? "");
+
+                    if(ses.Valid)
+                    {
+                        status = HttpStatusCode.OK;
+                        reply = new JsonObject() { ["success"] = true,
+                                                   ["token"] = ses.Token };
+                    }
+                    else
+                    {
+                        reply = new JsonObject() { ["success"] = false,
+                                                   ["message"] = "Invalid user name or password" };
+                    }
+                }
+            }
+            catch(Exception) 
+            {                                                                   // handle unexpected exception
+                reply = new JsonObject() { ["success"] = false, ["message"] = "Unexpected error." };
+            }
+
+            e.Reply(status, reply?.ToJsonString());                             // send response
+            return true;
         }
     }
 }

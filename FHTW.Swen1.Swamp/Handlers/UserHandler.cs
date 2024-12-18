@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Security;
 using System.Text.Json.Nodes;
-using FHTW.Swen1.Swamp.Exceptions;
+
+using FHTW.Swen1.Swamp.Security;
 using FHTW.Swen1.Swamp.Server;
 
 
@@ -8,7 +10,7 @@ using FHTW.Swen1.Swamp.Server;
 namespace FHTW.Swen1.Swamp.Handlers
 {
     /// <summary>This class implements a handler for user-specific requests.</summary>
-    public class UserHandler : Handler, IHandler
+    public sealed class UserHandler: Handler, IHandler
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Handler                                                                                               //
@@ -41,8 +43,6 @@ namespace FHTW.Swen1.Swamp.Handlers
         /// <returns>Returns TRUE.</returns>
         private static bool _CreateUser(HttpSvrEventArgs e)
         {
-            //TODO: implement
-            /*
             JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
             int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
 
@@ -50,29 +50,36 @@ namespace FHTW.Swen1.Swamp.Handlers
             {
                 JsonNode? json = JsonNode.Parse(e.Payload);                     // parse payload
                 if(json != null)
-                {                                                               // submit payload to User.Create()
-                    User.Create((string) json["username"]!,                     // will throw exception if failed.
-                                (string) json["password"]!,
-                                (string?) json["fullname"] ?? "",
-                                (string?) json["email"] ?? "");
+                {
+                    User user = new()                                           // create user object
+                    {
+                        UserName = (string?) json["username"] ?? "",
+                        FullName = (string?) json["name"] ?? "",
+                        EMail = (string?) json["email"] ?? ""
+                    };
+                    user.BeginEdit(Session.From(e));                            // edit user with session
+
+                    user.IsAdmin = (bool?) json["admin"] ?? false;              // set admin flag                    
+                    user.Save((string?) json["password"] ?? "12345");           // save user object
+                    
+                    user.EndEdit();                                             // end editing
+
                     status = HttpStatusCode.OK;
                     reply = new JsonObject() { ["success"] = true,
                                                 ["message"] = "User created."};
                 }
             }
-            catch(UserException ex)
-            {                                                                   // handle UserException
+            catch(SecurityException ex)
+            {                                                                   // handle SecurityException
                 reply = new JsonObject() { ["success"] = false, ["message"] = ex.Message };
             }
-            catch(Exception) 
+            catch(Exception)
             {                                                                   // handle unexpected exception
                 reply = new JsonObject() { ["success"] = false, ["message"] = "Unexpected error." };
             }
 
             e.Reply(status, reply?.ToJsonString());                             // send response
             return true;
-            */
-            return false;
         }
 
 
@@ -81,32 +88,29 @@ namespace FHTW.Swen1.Swamp.Handlers
         /// <returns>Returns TRUE.</returns>
         private static bool _QueryUser(HttpSvrEventArgs e)
         {
-            // TODO: fix
-            return false;
-            /*
             JsonObject? reply = new JsonObject() { ["success"] = false, ["message"] = "Invalid request." };
             int status = HttpStatusCode.BAD_REQUEST;                            // initialize response
 
             try
             {
-                (bool Success, User? User) ses = Token.Authenticate(e);         // querying user information requires authentication
+                Session ses = Session.From(e);
 
-                if(ses.Success)
+                if(ses.Valid)
                 {                                                               // authentication successful
-                    User? user = User.Get(e.Path[7..]);                         // get requested user name
-
-                    if(user == null)
-                    {                                                           // user not found
-                        status = HttpStatusCode.NOT_FOUND;
-                        reply = new JsonObject() { ["success"] = false, ["message"] = "User not found." };
-                    }
-                    else
+                    try
                     {
+                        User? user = User.ByUserName(e.Path[7..]);              // get requested user
+
                         status = HttpStatusCode.OK;
                         reply = new JsonObject() { ["success"] = true,          // prepare response
                             ["username"] = user!.UserName,
                             ["fullname"] = user!.FullName,
                             ["email"] = user.EMail };
+                    }
+                    catch(Exception)
+                    {                                                           // user not found
+                        status = HttpStatusCode.NOT_FOUND;
+                        reply = new JsonObject() { ["success"] = false, ["message"] = "User not found." };
                     }
                 }
                 else
@@ -122,7 +126,6 @@ namespace FHTW.Swen1.Swamp.Handlers
 
             e.Reply(status, reply?.ToJsonString());
             return true;
-            */
         }
     }
 }

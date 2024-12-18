@@ -1,4 +1,7 @@
 
+INSERT INTO USERS VALUES ('root', 'root', '0242c0436daa4c241ca8a793764b7dfb50c223121bb844cf49be670a3af4dd18', NULL, true);
+
+
 # create user
 curl -i -X POST http://localhost:12000/users --header "Content-Type: application/json" -d "{\"username\":\"batman\", \"password\":\"batcave\", \"name\":\"Bruce Wayne\", \"email\":\"office@batman.org\"}"
 curl -i -X POST http://localhost:12000/users --header "Content-Type: application/json" -d "{\"username\":\"oswin\", \"password\":\"souffle\", \"name\":\"Clara Oswald\"}"
@@ -10,5 +13,37 @@ curl -i -X POST http://localhost:12000/users --header "Content-Type: application
 curl -i -X POST http://localhost:12000/sessions --header "Content-Type: application/json" -d "{\"username\":\"oswin\", \"password\":\"souffle\"}"
 
 
-
 curl -i -X GET http://localhost:12000/users/oswin --header "Content-Type: application/json" --header "Authorization: Bearer oswin-debug"
+curl -i -X GET http://localhost:12000/users/oswin --header "Content-Type: application/json" --header "Authorization: Bearer ff5zphhWUhqZlwqJR6ERp4ri"
+
+
+# create thread
+curl -i -X POST http://localhost:12000/threads --header "Content-Type: application/json" -d "{\"title\":\"Everything is Weird\"}" --header "Authorization: Bearer oswin-debug"
+
+# edit thread
+curl -i -X PUT http://localhost:12000/threads/1 --header "Content-Type: application/json" -d "{\"title\":\"Everything is Cool\"}" --header "Authorization: Bearer oswin-debug"
+
+# query thread
+curl -i -X GET http://localhost:12000/threads/1 --header "Content-Type: application/json" --header "Authorization: Bearer oswin-debug"
+
+# delete thread
+curl -i -X DELETE http://localhost:12000/threads/1 --header "Content-Type: application/json" --header "Authorization: Bearer oswin-debug"
+
+
+
+# create entry
+curl -i -X POST http://localhost:12000/entries --header "Content-Type: application/json" -d "{\"text\":\"I agree.\", \"thread\":1}" --header "Authorization: Bearer oswin-debug"
+
+# edit entry
+curl -i -X PUT http://localhost:12000/entries/1 --header "Content-Type: application/json" -d "{\"text\":\"I disagree.\"}" --header "Authorization: Bearer oswin-debug"
+
+# query entry
+curl -i -X GET http://localhost:12000/entries/1 --header "Content-Type: application/json" --header "Authorization: Bearer oswin-debug"
+
+# delete entry
+# should fail
+curl -i -X DELETE http://localhost:12000/entries/1 --header "Content-Type: application/json" --header "Authorization: Bearer batman-debug"
+
+# should work
+curl -i -X DELETE http://localhost:12000/entries/1 --header "Content-Type: application/json" --header "Authorization: Bearer oswin-debug"
+

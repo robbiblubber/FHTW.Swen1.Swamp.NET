@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
+
 using FHTW.Swen1.Swamp.Base;
 using FHTW.Swen1.Swamp.Security;
 
@@ -20,6 +23,83 @@ namespace FHTW.Swen1.Swamp.Repositories
             _TableName = "USERS";
             _Fields = ["USERNAME", "NAME", "EMAIL", "HADMIN"];
             _Params = [":id", ":n", ":m", ":a"];
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // public methods                                                                                                   //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Verifies the user password.</summary>
+        /// <param name="user">User.</param>
+        /// <param name="password">Password.</param>
+        /// <returns>Returns TRUE if the password is valid, otherwise returns FALSE.</returns>
+        public bool VerifyPassword(User user, string password)
+        {
+            using (IDbCommand cmd = _Cn.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT COUNT(*) FROM {_TableName} WHERE USERNAME = :un AND PASSWD = :pw";
+
+                IDataParameter p = cmd.CreateParameter();
+                p.ParameterName = ":un";
+                p.Value = user.UserName;
+                cmd.Parameters.Add(p);
+
+                p = cmd.CreateParameter();
+                p.ParameterName = ":pw";
+                p.Value = _GetPasswordHash(user, password);
+                cmd.Parameters.Add(p);
+
+                return (Convert.ToInt32(cmd.ExecuteScalar()) == 1);
+            }
+        }
+
+
+        /// <summary>Sets the user password.</summary>
+        /// <param name="user">User.</param>
+        /// <param name="password">Password.</param>
+        public void SetPassword(User user, string password) 
+        {
+            using (IDbCommand cmd = _Cn.CreateCommand())
+            {
+                cmd.CommandText = $"UPDATE {_TableName} SET PASSWD = :pw WHERE USERNAME = :un";
+
+                IDataParameter p = cmd.CreateParameter();
+                p.ParameterName = ":pw";
+                p.Value = _GetPasswordHash(user, password);
+                cmd.Parameters.Add(p);
+
+                p = cmd.CreateParameter();
+                p.ParameterName = ":un";
+                p.Value = user.UserName;
+                cmd.Parameters.Add(p);
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // private methods                                                                                                  //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Gets the user password hash.</summary>
+        /// <param name="user">User object.</param>
+        /// <param name="password">Password.</param>
+        /// <returns>Gets the password hash for the user.</returns>
+        private string _GetPasswordHash(User user, string password)
+        {
+            using(SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] buf = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(user.UserName + password));
+
+                StringBuilder rval = new StringBuilder();
+                foreach(byte b in buf) { rval.Append(b.ToString("x2")); }
+                
+                return rval.ToString();
+            }
         }
 
 
@@ -68,6 +148,17 @@ namespace FHTW.Swen1.Swamp.Repositories
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // [override] Repository<User>                                                                                      //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>Creates an object from database data.</summary>
+        /// <param name="re">Database cursor.</param>
+        /// <returns>Returns an object.</returns>
+        protected override User _CreateObject(IDataReader re)
+        {
+            User rval = new();
+            ((__IAtom) rval).__InternalID = re.GetString(0);
+            return _RefeshObject(re, rval);
+        }
+
 
         /// <summary>Saves the object.</summary>
         /// <param name="obj">Object.</param>

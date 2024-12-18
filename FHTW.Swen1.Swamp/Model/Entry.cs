@@ -3,21 +3,22 @@ using System.Security;
 
 using FHTW.Swen1.Swamp.Base;
 using FHTW.Swen1.Swamp.Repositories;
-using FHTW.Swen1.Swamp.Security;
+
+using Thread = FHTW.Swen1.Swamp.Model.Thread;
 
 
 
 namespace FHTW.Swen1.Swamp.Model
 {
-    /// <summary>This class represents a thread.</summary>
-    public sealed class Thread: Atom, IAtom, __IAtom
+    /// <summary>This class represents an entry.</summary>
+    public sealed class Entry: Atom, IAtom, __IAtom
     {
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // private static members                                                                                           //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>User repository.</summary>
-        private static ThreadRepository _Repository = new();
+        private static EntryRepository _Repository = new();
 
 
 
@@ -26,7 +27,7 @@ namespace FHTW.Swen1.Swamp.Model
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Creates a new instance of this class.</summary>
-        public Thread()
+        public Entry()
         {}
 
 
@@ -35,39 +36,39 @@ namespace FHTW.Swen1.Swamp.Model
         // public properties                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>Gets the thread ID.</summary>
+        /// <summary>Gets the entry ID.</summary>
         public int ID
         {
             get { return (int?) _InternalID ?? -1; }
         }
 
 
-        /// <summary>Gets or sets the thread title.</summary>
-        public string Title
+        /// <summary>Gets or sets the entry text.</summary>
+        public string Text
         {
             get; set;
         } = string.Empty;
 
 
-        /// <summary>Gets or sets the thread time.</summary>
+        /// <summary>Gets or sets the entry time.</summary>
         public DateTime Time
         {
             get; internal set;
         } = DateTime.Now;
 
 
-        /// <summary>Gets the thread owner user name.</summary>
+        /// <summary>Gets the thread.</summary>
+        public Thread? Thread
+        {
+            get; internal set;
+        }
+
+
+        /// <summary>Gets the entry owner user name.</summary>
         public string Owner
         {
             get; internal set;
         } = string.Empty;
-
-
-        /// <summary>Gets the entries for this thread.</summary>
-        public IEnumerable<Entry> Entries
-        {
-            get { return Entry.For(this); }
-        }
 
 
 
@@ -75,12 +76,21 @@ namespace FHTW.Swen1.Swamp.Model
         // public static methods                                                                                            //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        /// <summary>Gets a thread by its ID.</summary>
+        /// <summary>Gets an entry by its ID.</summary>
         /// <param name="id">ID.</param>
-        /// <returns>Returns the thread with the given ID.</returns>
-        public static Thread ByID(int id)
+        /// <returns>Returns the entry with the given ID.</returns>
+        public static Entry ByID(int id)
         {
             return _Repository.Get(id);
+        }
+
+
+        /// <summary>Gets the entries for a thread.</summary>
+        /// <param name="thread">Thread.</param>
+        /// <returns>Returns a set of entries that belong to the given thread.</returns>
+        public static IEnumerable<Entry> For(Thread thread)
+        {
+            return _Repository.GetFor(thread);
         }
 
 
@@ -95,7 +105,7 @@ namespace FHTW.Swen1.Swamp.Model
             if(!(_EditingSession?.Valid ?? false)) { throw new SecurityException("Required authentication."); }
             if(!(_EditingSession.Is(Owner) || _EditingSession.IsAdmin))
             {
-                throw new SecurityException("Only owner or admins can delete thread.");
+                throw new SecurityException("Only owner or admins can delete entry.");
             }
 
             _Repository.Delete(this);
@@ -113,7 +123,7 @@ namespace FHTW.Swen1.Swamp.Model
             }
             else if(!(_EditingSession.Is(Owner) || _EditingSession.IsAdmin))
             {
-                throw new SecurityException("Only owner or admins can edit thread.");
+                throw new SecurityException("Only owner or admins can edit entry.");
             }
 
             _Repository.Save(this);

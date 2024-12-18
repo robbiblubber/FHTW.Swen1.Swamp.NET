@@ -66,7 +66,7 @@ namespace FHTW.Swen1.Swamp.Repositories
         protected virtual T _CreateObject(IDataReader re)
         {
             T rval = new();
-            ((__IAtom) rval).__InternalID = re.GetString(0);
+            ((__IAtom) rval).__InternalID = re.GetInt32(0);
             return _RefeshObject(re, rval);
         }
 
@@ -177,7 +177,7 @@ namespace FHTW.Swen1.Swamp.Repositories
                 using(IDbCommand cmd = _Cn.CreateCommand())
                 {
                     cmd.CommandText = $"SELECT last_insert_rowid()";
-                    obj.__InternalID = (int) cmd.ExecuteScalar()!;
+                    obj.__InternalID = Convert.ToInt32(cmd.ExecuteScalar()!);
                 }
             }
             else

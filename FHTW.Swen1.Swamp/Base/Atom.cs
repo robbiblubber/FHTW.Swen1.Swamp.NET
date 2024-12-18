@@ -1,6 +1,5 @@
 ﻿using System;
 
-using FHTW.Swen1.Swamp.Repositories;
 using FHTW.Swen1.Swamp.Security;
 
 
@@ -14,8 +13,8 @@ namespace FHTW.Swen1.Swamp.Base
         // protected members                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>Editing user.</summary>
-        protected User? _EditingUser = null;
+        /// <summary>Editing session.</summary>
+        protected Session? _EditingSession = null;
 
         /// <summary>Internal ID.</summary>
         protected object? _InternalID = null;
@@ -40,10 +39,17 @@ namespace FHTW.Swen1.Swamp.Base
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Starts editing an object.</summary>
-        /// <param name="user">User that performs the operation.</param>
-        public virtual void Edit(User user)
+        /// <param name="session">Session that performs the operation.</param>
+        public virtual void BeginEdit(Session session)
         {
-            _EditingUser = user;
+            _EditingSession = session;
+        }
+
+
+        /// <summary>Ends editing an object.</summary>
+        public virtual void EndEdit()
+        {
+            _EditingSession = null;
         }
 
 
@@ -73,9 +79,9 @@ namespace FHTW.Swen1.Swamp.Base
 
 
         /// <summary>Gets the editing user for this object.</summary>
-        User? __IAtom.__EditingUser 
+        Session? __IAtom.__EditingSession
         {
-            get { return _EditingUser; }
+            get { return _EditingSession; }
         }
     }
 }

@@ -57,6 +57,45 @@ namespace FHTW.Swen1.Swamp.Security
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // public methods                                                                                                   //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        /// <summary>Verifies the user password.</summary>
+        /// <param name="password">Password.</param>
+        /// <returns>Returns TRUE if the password is valid, otherwise returns FALSE.</returns>
+        public bool VerifyPassword(string password)
+        {
+            return _Repository.VerifyPassword(this, password);
+        }
+
+
+        /// <summary>Sets the user password.</summary>
+        /// <param name="password">Password.</param>
+        public void SetPassword(string password)
+        {
+            if((!(_EditingSession?.IsAdmin ?? false)) || ((_EditingSession?.Is(this) ?? false)))
+            {                                                                   // password can only be set by admins or self
+                throw new SecurityException("Password can only be changed by the user or admin.");
+            }
+
+            _Repository.SetPassword(this, password);
+            _EditingSession = null;
+        }
+
+
+        /// <summary>Saves the user object with password.</summary>
+        /// <param name="password">Password.</param>
+        public void Save(string password)
+        {
+            if(_InternalID is not null) { throw new SecurityException("Setting password only allowed when creating a user."); }
+
+            Save();
+            _Repository.SetPassword(this, password);
+        }
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // public properties                                                                                                //
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,14 +132,14 @@ namespace FHTW.Swen1.Swamp.Security
             get { return _IsAdmin; }
             set
             {
-                if(_IsAdmin != value)
+                if(_IsAdmin == value) return;
+
+                if(value && (!(_EditingSession?.IsAdmin ?? false)))
                 {
-                    if(_EditingUser is null || !_EditingUser.IsAdmin)
-                    {
-                        throw new SecurityException("Administrative access required.");
-                    }
-                    _IsAdmin = value;
+                    throw new SecurityException("Administrative access required.");
                 }
+                
+                _IsAdmin = value;
             }
         }
 
@@ -122,8 +161,8 @@ namespace FHTW.Swen1.Swamp.Security
         /// <summary>Deletes the object.</summary>
         public override void Delete()
         {
-            if (_EditingUser != this && !(_EditingUser?.IsAdmin ?? false))
-            {
+            if((!(_EditingSession?.IsAdmin ?? false)) && ((_EditingSession?.Is(this) ?? false)))
+            {                                                                   // user can only be deleted by self or admin
                 throw new SecurityException("Administrative access required.");
             }
             
@@ -134,10 +173,6 @@ namespace FHTW.Swen1.Swamp.Security
         /// <summary>Saves the object.</summary>
         public override void Save()
         {
-            if((((__IAtom) this).__InternalID == null) && IsAdmin)
-            {
-                throw new SecurityException("Creating admin user disallowed.");
-            }
             if(string.IsNullOrEmpty(_UserName)) throw new SecurityException("Empty user name disallowed.");
 
             _Repository.Save(this);

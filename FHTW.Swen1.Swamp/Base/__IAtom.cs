@@ -17,7 +17,7 @@ namespace FHTW.Swen1.Swamp.Base
         public object? __InternalID { get; set; }
 
 
-        /// <summary>Gets the editing user for this object.</summary>
-        public User? __EditingUser { get; }
+        /// <summary>Gets the editing session for this object.</summary>
+        public Session? __EditingSession { get; }
     }
 }

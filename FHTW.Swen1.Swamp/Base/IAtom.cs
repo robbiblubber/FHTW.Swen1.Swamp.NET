@@ -13,8 +13,12 @@ namespace FHTW.Swen1.Swamp.Base
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Starts editing an object.</summary>
-        /// <param name="user">User that performs the operation.</param>
-        public void Edit(User user);
+        /// <param name="session">Session that performs the operation.</param>
+        public void BeginEdit(Session session);
+
+
+        /// <summary>Ends editing an object.</summary>
+        public void EndEdit();
 
 
         /// <summary>Deletes the object.</summary>
