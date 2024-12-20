@@ -23,6 +23,13 @@ namespace FHTW.Swen1.Swamp.Server
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>Creates a new instance of this class.</summary>
+        public HttpSvrEventArgs()
+        {
+            _Client = new();
+        }
+
+
+        /// <summary>Creates a new instance of this class.</summary>
         /// <param name="client">TCP client.</param>
         /// <param name="plainMessage">Plain HTTP message.</param>
         public HttpSvrEventArgs(TcpClient client, string plainMessage)

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FHTW.Swen1.Swamp", "FHTW.Swen1.Swamp\FHTW.Swen1.Swamp.csproj", "{DDA6AEBD-2D6D-4533-ABE6-F8A5E12E4697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FHTW.Swen1.Swamp", "FHTW.Swen1.Swamp\FHTW.Swen1.Swamp.csproj", "{DDA6AEBD-2D6D-4533-ABE6-F8A5E12E4697}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FHTW.Swen1.Swamp.UnitTests", "FHTW.Swen1.Swamp.UnitTests\FHTW.Swen1.Swamp.UnitTests.csproj", "{CF85C9DA-3B36-4F6F-8D9D-1218B6D7DD07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DDA6AEBD-2D6D-4533-ABE6-F8A5E12E4697}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDA6AEBD-2D6D-4533-ABE6-F8A5E12E4697}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDA6AEBD-2D6D-4533-ABE6-F8A5E12E4697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF85C9DA-3B36-4F6F-8D9D-1218B6D7DD07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF85C9DA-3B36-4F6F-8D9D-1218B6D7DD07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF85C9DA-3B36-4F6F-8D9D-1218B6D7DD07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF85C9DA-3B36-4F6F-8D9D-1218B6D7DD07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
