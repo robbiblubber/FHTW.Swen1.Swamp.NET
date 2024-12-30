@@ -120,7 +120,7 @@ namespace FHTW.Swen1.Swamp.Server
         /// <summary>Replies the request</summary>
         /// <param name="status">HTTP Status code.</param>
         /// <param name="msg">Reply body.</param>
-        public void Reply(int status, string? body = null)
+        public virtual void Reply(int status, string? body = null)
         {
             string data;
 
